@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shoppinglist_back.Data;
 using Shoppinglist_back.Dtos.RelationMembersListsDtos;
@@ -67,6 +68,23 @@ namespace Shoppinglist_back.Services
 
             _context.ShoppingList.Remove(shoppingList); // Não é necessário anexar porque a entidade já está sendo rastreada
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<ReadShoppingListDto> UpdateTitle(int id, UpdateShoppingListDto newShoppingList)
+        {
+            var shoppingList = await _context.ShoppingList.Include(sl => sl.RelationMembersLists).FirstOrDefaultAsync(sl => sl.Id == id);
+            if (shoppingList == null)
+            {
+                throw new ArgumentException("Shopping list not found.");
+            }
+
+            shoppingList.Title = newShoppingList.Title;
+            var completeInfo = _mapper.Map<ReadShoppingListDto>(shoppingList);
+            await _context.SaveChangesAsync();
+
+
+
+            return completeInfo;
         }
     }
 }

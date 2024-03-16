@@ -72,4 +72,14 @@ public class ShoppingListController : ControllerBase
         return NoContent();
 
     }
+
+    [HttpPut("{listId}")]
+    public async Task<IActionResult> UpdateTitle(int listId, [FromBody] UpdateShoppingListDto newShoppingList)
+    {
+
+        var updatedShoppingList = await _shoppingListService.UpdateTitle(listId, newShoppingList);
+
+        return Ok(updatedShoppingList);
+
+    }
 }

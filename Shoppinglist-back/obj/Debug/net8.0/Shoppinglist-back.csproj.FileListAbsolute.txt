@@ -118,3 +118,4 @@ C:\Users\lucas\source\repos\Shoppinglist-back\Shoppinglist-back\bin\Debug\net8.0
 C:\Users\lucas\source\repos\Shoppinglist-back\Shoppinglist-back\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\lucas\source\repos\Shoppinglist-back\Shoppinglist-back\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
 C:\Users\lucas\source\repos\Shoppinglist-back\Shoppinglist-back\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\lucas\source\repos\Shoppinglist-back\Shoppinglist-back\obj\Debug\net8.0\Shoppinglist-back.sourcelink.json
