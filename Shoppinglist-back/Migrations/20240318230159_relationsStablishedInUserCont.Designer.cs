@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shoppinglist_back.Data;
 
@@ -11,9 +12,11 @@ using Shoppinglist_back.Data;
 namespace Shoppinglist_back.Migrations
 {
     [DbContext(typeof(UserContext))]
-    partial class UserContextModelSnapshot : ModelSnapshot
+    [Migration("20240318230159_relationsStablishedInUserCont")]
+    partial class relationsStablishedInUserCont
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,10 +192,15 @@ namespace Shoppinglist_back.Migrations
                     b.Property<string>("UserBId")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
                     b.Property<string>("NicknameA")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("NicknameB")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("UserAId", "UserBId");

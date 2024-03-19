@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shoppinglist_back.Dtos.RelationMembersListsDtos;
 using Shoppinglist_back.Dtos.ShoppingListDtos;
 using Shoppinglist_back.Services;
-using System.Text.Json.Serialization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Shoppinglist_back.Controllers;
 
@@ -27,9 +26,13 @@ public class ShoppingListController : ControllerBase
         var shoppingList = await _shoppingListService.Create(listDto);
 
         await _relationMembersListsService.Create(listDto.Members, shoppingList.Id);
+        var options = new JsonSerializerOptions
+        {
+            ReferenceHandler = ReferenceHandler.Preserve
+        };
 
 
-        return CreatedAtAction(nameof(GetShoppingListById), new { Id = shoppingList.Id }, JsonSerializer.Serialize(shoppingList));
+        return CreatedAtAction(nameof(GetShoppingListById), new { ListId = shoppingList.Id }, JsonSerializer.Serialize(shoppingList, options));
     }
 
 

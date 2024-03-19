@@ -12,8 +12,8 @@ using Shoppinglist_back.Data;
 namespace Shoppinglist_back.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20240315200959_updateUserIdToDefault")]
-    partial class updateUserIdToDefault
+    [Migration("20240318235434_adjustNullableNick")]
+    partial class adjustNullableNick
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,24 +31,17 @@ namespace Shoppinglist_back.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex");
-
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -66,14 +59,11 @@ namespace Shoppinglist_back.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetRoleClaims", (string)null);
+                    b.ToTable("RoleClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -91,36 +81,32 @@ namespace Shoppinglist_back.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserClaims", (string)null);
+                    b.ToTable("UserClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.Property<string>("LoginProvider")
+                    b.Property<string>("UserId")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("varchar(255)");
+                    b.Property<string>("LoginProvider")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("ProviderKey")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
-                    b.HasKey("LoginProvider", "ProviderKey");
+                    b.HasKey("UserId");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserLogins", (string)null);
+                    b.ToTable("UserLogins");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
@@ -129,13 +115,11 @@ namespace Shoppinglist_back.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("RoleId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
-                    b.HasKey("UserId", "RoleId");
+                    b.HasKey("UserId");
 
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -144,20 +128,46 @@ namespace Shoppinglist_back.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("varchar(255)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
-                        .HasColumnType("varchar(255)");
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Value")
                         .HasColumnType("longtext");
 
-                    b.HasKey("UserId", "LoginProvider", "Name");
+                    b.HasKey("UserId");
 
-                    b.ToTable("AspNetUserTokens", (string)null);
+                    b.ToTable("UserTokens");
                 });
 
-            modelBuilder.Entity("Shoppinglist_back.Models.RelationMembersLists", b =>
+            modelBuilder.Entity("Shoppinglist_back.Models.JoinListRequest", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int>("ListId")
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("Approved")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Invited")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("UserId", "ListId");
+
+                    b.HasIndex("ListId");
+
+                    b.ToTable("JoinListRequest");
+                });
+
+            modelBuilder.Entity("Shoppinglist_back.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -165,23 +175,104 @@ namespace Shoppinglist_back.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsAdmin")
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Product");
+                });
+
+            modelBuilder.Entity("Shoppinglist_back.Models.RelatedUsers", b =>
+                {
+                    b.Property<string>("UserAId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("UserBId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("NicknameA")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("NicknameB")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("UserAId", "UserBId");
+
+                    b.HasIndex("UserBId");
+
+                    b.ToTable("RelatedUsers");
+                });
+
+            modelBuilder.Entity("Shoppinglist_back.Models.RelatedUsersRequest", b =>
+                {
+                    b.Property<string>("UserAId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("UserBId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<bool?>("Approved")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserAId", "UserBId");
+
+                    b.HasIndex("UserBId");
+
+                    b.ToTable("RelatedUsersRequest");
+                });
+
+            modelBuilder.Entity("Shoppinglist_back.Models.RelationMembersLists", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("ShoppingListId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("UserId", "ShoppingListId");
 
                     b.HasIndex("ShoppingListId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("RelationMembersLists");
+                });
+
+            modelBuilder.Entity("Shoppinglist_back.Models.RelationProductsLists", b =>
+                {
+                    b.Property<int>("ListId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuantityBought")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuantityWanted")
+                        .HasColumnType("int");
+
+                    b.HasKey("ListId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("RelationProductsLists");
                 });
 
             modelBuilder.Entity("Shoppinglist_back.Models.ShoppingList", b =>
@@ -210,12 +301,10 @@ namespace Shoppinglist_back.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
@@ -232,12 +321,10 @@ namespace Shoppinglist_back.Migrations
                         .HasColumnType("varchar(30)");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("longtext");
@@ -255,70 +342,68 @@ namespace Shoppinglist_back.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex");
-
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("Shoppinglist_back.Models.JoinListRequest", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
+                    b.HasOne("Shoppinglist_back.Models.ShoppingList", "ShoppingList")
+                        .WithMany("JoinListRequests")
+                        .HasForeignKey("ListId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.HasOne("Shoppinglist_back.Models.User", null)
-                        .WithMany()
+                    b.HasOne("Shoppinglist_back.Models.User", "User")
+                        .WithMany("JoinListRequests")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ShoppingList");
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("Shoppinglist_back.Models.RelatedUsers", b =>
                 {
-                    b.HasOne("Shoppinglist_back.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                    b.HasOne("Shoppinglist_back.Models.User", "UserA")
+                        .WithMany("RelatedUsersAsUserA")
+                        .HasForeignKey("UserAId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Shoppinglist_back.Models.User", "UserB")
+                        .WithMany("RelatedUsersAsUserB")
+                        .HasForeignKey("UserBId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserA");
+
+                    b.Navigation("UserB");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("Shoppinglist_back.Models.RelatedUsersRequest", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
+                    b.HasOne("Shoppinglist_back.Models.User", "UserA")
+                        .WithMany("RelatedUsersRequestsAsUserA")
+                        .HasForeignKey("UserAId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Shoppinglist_back.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                    b.HasOne("Shoppinglist_back.Models.User", "UserB")
+                        .WithMany("RelatedUsersRequestsAsUserB")
+                        .HasForeignKey("UserBId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.HasOne("Shoppinglist_back.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("UserA");
+
+                    b.Navigation("UserB");
                 });
 
             modelBuilder.Entity("Shoppinglist_back.Models.RelationMembersLists", b =>
@@ -340,13 +425,51 @@ namespace Shoppinglist_back.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Shoppinglist_back.Models.RelationProductsLists", b =>
+                {
+                    b.HasOne("Shoppinglist_back.Models.ShoppingList", "ShoppingList")
+                        .WithMany("RelationProductsLists")
+                        .HasForeignKey("ListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shoppinglist_back.Models.Product", "Product")
+                        .WithMany("RelationProductsLists")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("ShoppingList");
+                });
+
+            modelBuilder.Entity("Shoppinglist_back.Models.Product", b =>
+                {
+                    b.Navigation("RelationProductsLists");
+                });
+
             modelBuilder.Entity("Shoppinglist_back.Models.ShoppingList", b =>
                 {
+                    b.Navigation("JoinListRequests");
+
                     b.Navigation("RelationMembersLists");
+
+                    b.Navigation("RelationProductsLists");
                 });
 
             modelBuilder.Entity("Shoppinglist_back.Models.User", b =>
                 {
+                    b.Navigation("JoinListRequests");
+
+                    b.Navigation("RelatedUsersAsUserA");
+
+                    b.Navigation("RelatedUsersAsUserB");
+
+                    b.Navigation("RelatedUsersRequestsAsUserA");
+
+                    b.Navigation("RelatedUsersRequestsAsUserB");
+
                     b.Navigation("RelationMembersLists");
                 });
 #pragma warning restore 612, 618

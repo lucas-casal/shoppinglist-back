@@ -12,6 +12,8 @@ namespace Shoppinglist_back.Models
         public string Title { get; set; }
 
         public virtual ICollection<RelationMembersLists> RelationMembersLists { get; set; }
+        public virtual ICollection<JoinListRequest> JoinListRequests { get; set; }
+        public virtual ICollection<RelationProductsLists> RelationProductsLists { get; set; }
 
 
     }

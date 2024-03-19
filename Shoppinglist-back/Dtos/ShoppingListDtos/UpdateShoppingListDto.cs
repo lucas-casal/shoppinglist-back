@@ -1,6 +1,9 @@
-﻿namespace Shoppinglist_back.Dtos.ShoppingListDtos;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Shoppinglist_back.Dtos.ShoppingListDtos;
 
 public class UpdateShoppingListDto
 {
-    public string? Title { get; set; }
+    [Required]
+    public string Title { get; set; }
 }
