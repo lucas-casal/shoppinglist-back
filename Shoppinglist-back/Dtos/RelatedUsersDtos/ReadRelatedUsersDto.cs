@@ -5,8 +5,10 @@ namespace Shoppinglist_back.Dtos.RelatedUsersDtos;
 public class ReadRelatedUsersDto
 {
     public string UserAId { get; set; }
+    public string UsernameA {  get; set; }
     public string NicknameA {  get; set; }
     public string UserBId { get; set; }
+    public string UsernameB {  get; set; }
     public string NicknameB {  get; set; }
 
 }

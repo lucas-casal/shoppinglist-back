@@ -28,7 +28,9 @@ public class RelatedUsersService
 
     public async Task<ReadRelatedUsersDto> GetOneById(CreateRelatedUsersDto ids)
     {
-        var relation = await _context.RelatedUsers.FirstOrDefaultAsync(ru => 
+        var relation = await _context.RelatedUsers
+                                .Include(ru => ru.UserA).Include(ru => ru.UserB)
+                                .FirstOrDefaultAsync(ru => 
                                 (ru.UserAId == ids.UserAId || ru.UserAId == ids.UserBId)
                                 &&
                                 (ru.UserBId == ids.UserAId || ru.UserBId == ids.UserBId)
@@ -37,6 +39,9 @@ public class RelatedUsersService
         if (relation is null) throw new ArgumentException("Relation not found");
         var readRelation = _mapper.Map<ReadRelatedUsersDto>(relation);
 
+        readRelation.UsernameA = relation.UserA.Name;
+        readRelation.UsernameB = relation.UserB.Name;
+
         return readRelation;
     }
 
@@ -44,6 +49,7 @@ public class RelatedUsersService
     {
         var relations = await _context.RelatedUsers
                                 .Where(ru => (ru.UserAId == UserId || ru.UserBId == UserId))
+                                .Include(ru => ru.UserA).Include(ru => ru.UserB)
                                 .Select(ru => new ReadRelatedUsersByUserIdDto
                                     {
                                         UserId = UserId == ru.UserAId ? ru.UserBId : ru.UserAId,
