@@ -9,6 +9,7 @@ public class RelatedUsersProfile : Profile
     public RelatedUsersProfile()
     {
         CreateMap<CreateRelatedUsersDto, RelatedUsers>();
+        CreateMap<RelatedUsers, ReadRelatedUsersDto>();
     }
 
 }

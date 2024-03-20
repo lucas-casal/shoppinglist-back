@@ -2,10 +2,11 @@
 
 namespace Shoppinglist_back.Dtos.RelatedUsersDtos;
 
-public class CreateRelatedUsersDto
+public class ReadRelatedUsersDto
 {
-    [Required]
     public string UserAId { get; set; }
-    [Required]
+    public string NicknameA {  get; set; }
     public string UserBId { get; set; }
+    public string NicknameB {  get; set; }
+
 }

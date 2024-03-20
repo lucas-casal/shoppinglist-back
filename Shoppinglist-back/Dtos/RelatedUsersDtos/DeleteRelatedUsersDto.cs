@@ -2,10 +2,10 @@
 
 namespace Shoppinglist_back.Dtos.RelatedUsersDtos;
 
-public class CreateRelatedUsersDto
+public class DeleteRelatedUsersDto
 {
     [Required]
-    public string UserAId { get; set; }
+    public string UserAId {  get; set; }
     [Required]
     public string UserBId { get; set; }
 }
