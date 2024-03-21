@@ -5,9 +5,6 @@ namespace Shoppinglist_back.Models;
 
 public class RelatedUsersRequest
 {
-    [Key]
-    [Required]
-    public int Id { get; set; }
     [Required]
     public string UserAId { get; set; }
     [ForeignKey("UserAId")]

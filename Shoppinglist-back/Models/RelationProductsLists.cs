@@ -6,9 +6,6 @@ namespace Shoppinglist_back.Models;
 
 public class RelationProductsLists
 {
-    [Key]
-    [Required]
-    public int Id { get; set; }
     [Required]
     public int ProductId { get; set; }
     [ForeignKey("ProductId")]

@@ -34,6 +34,7 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<RelationMembersListsService>();
 builder.Services.AddScoped<ShoppingListService>();
 builder.Services.AddScoped<RelatedUsersService>();
+builder.Services.AddScoped<RelatedUsersRequestService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

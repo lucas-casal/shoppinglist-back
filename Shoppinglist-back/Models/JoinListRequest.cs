@@ -5,9 +5,6 @@ namespace Shoppinglist_back.Models;
 
 public class JoinListRequest
 {
-    [Key]
-    [Required]
-    public int Id { get; set; }
     [Required]
     public string UserId { get; set; }
     [ForeignKey("UserId")]
