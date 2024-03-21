@@ -20,8 +20,15 @@ public class RelatedUsersRequestService
 
     public async Task<RelatedUsersRequest> Create(CreateRelatedUsersRequestDto dto)
     {
-        var request = await _context.RelatedUsersRequest
-                                            .FirstOrDefaultAsync(rur =>
+        var relation = await _context.RelatedUsers.FirstOrDefaultAsync(rur =>
+                                                (dto.UserAId == rur.UserAId || dto.UserAId == rur.UserBId)
+                                                &&
+                                                (dto.UserBId == rur.UserAId || dto.UserBId == rur.UserBId)
+                                               );
+
+        if (relation != null) throw new InvalidOperationException("Esses usuários já estão relacionados");
+
+        var request = await _context.RelatedUsersRequest.FirstOrDefaultAsync(rur =>
                                                 (dto.UserAId == rur.UserAId || dto.UserAId == rur.UserBId)
                                                 &&
                                                 (dto.UserBId == rur.UserAId || dto.UserBId == rur.UserBId)
