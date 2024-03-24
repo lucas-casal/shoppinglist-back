@@ -11,7 +11,7 @@ using Shoppinglist_back.Data;
 
 namespace Shoppinglist_back.Migrations
 {
-    [DbContext(typeof(UserContext))]
+    [DbContext(typeof(ShoppinglisterContext))]
     [Migration("20240318232852_fixRelat")]
     partial class fixRelat
     {

@@ -10,6 +10,6 @@ public class ReadShoppingListDto
     public string Title { get; set; }
     [JsonPropertyName("Members")]
 
-    public List<ReadRelationMembersListsThroughListDto> ReadRelationMLDtos { get; set; }
+    public ICollection<ReadRelationMembersListsThroughListDto> Members { get; set; }
 
 }

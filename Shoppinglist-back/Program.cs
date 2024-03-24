@@ -16,14 +16,14 @@ var connectionString = builder.Configuration.GetConnectionString("Shoppinglister
 builder.Services.AddDbContext<ShoppinglisterContext>(opts => 
     opts.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-builder.Services.AddDbContext<UserContext>(opts => 
+builder.Services.AddDbContext<ShoppinglisterContext>(opts => 
     opts.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 builder.Services.AddIdentity<User, IdentityRole>(opts =>
 {
     opts.User.RequireUniqueEmail = true;
 })
-    .AddEntityFrameworkStores<UserContext>()
+    .AddEntityFrameworkStores<ShoppinglisterContext>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

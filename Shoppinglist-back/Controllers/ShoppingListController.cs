@@ -20,19 +20,19 @@ public class ShoppingListController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateShoppinglist(CreateShoppingListDto listDto)
+    public async Task<IActionResult> CreateShoppinglist([FromBody] CreateShoppingListDto listDto, [FromHeader(Name = "UserId")] string creatorId)
     {
         
-        var shoppingList = await _shoppingListService.Create(listDto);
+        var shoppingList = await _shoppingListService.Create(listDto, creatorId);
 
-        await _relationMembersListsService.Create(listDto.Members, shoppingList.Id);
+        await _relationMembersListsService.CreateMany(listDto.Members, shoppingList.Id);
         var options = new JsonSerializerOptions
         {
             ReferenceHandler = ReferenceHandler.Preserve
         };
 
 
-        return CreatedAtAction(nameof(GetShoppingListById), new { ListId = shoppingList.Id }, JsonSerializer.Serialize(shoppingList, options));
+        return CreatedAtAction(nameof(GetShoppingListById), new { ListId = shoppingList.Id }, shoppingList);
     }
 
 
@@ -47,7 +47,7 @@ public class ShoppingListController : ControllerBase
         }
 
        
-        return Ok(JsonSerializer.Serialize(shoppingList));
+        return Ok(shoppingList);
         
     }
 
@@ -62,7 +62,7 @@ public class ShoppingListController : ControllerBase
         }
 
 
-        return Ok(JsonSerializer.Serialize(shoppingList));
+        return Ok(shoppingList);
 
     }
 

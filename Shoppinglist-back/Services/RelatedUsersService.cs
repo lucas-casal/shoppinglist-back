@@ -9,8 +9,8 @@ namespace Shoppinglist_back.Services;
 public class RelatedUsersService
 {
     private IMapper _mapper;
-    private UserContext _context;
-    public RelatedUsersService(IMapper mapper, UserContext userContext)
+    private ShoppinglisterContext _context;
+    public RelatedUsersService(IMapper mapper, ShoppinglisterContext userContext)
     {
         _mapper = mapper;
         _context = userContext;

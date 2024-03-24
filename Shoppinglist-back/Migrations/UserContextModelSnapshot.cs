@@ -10,7 +10,7 @@ using Shoppinglist_back.Data;
 
 namespace Shoppinglist_back.Migrations
 {
-    [DbContext(typeof(UserContext))]
+    [DbContext(typeof(ShoppinglisterContext))]
     partial class UserContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

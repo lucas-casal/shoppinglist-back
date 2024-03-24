@@ -4,6 +4,7 @@ using Shoppinglist_back.Data;
 using Shoppinglist_back.Dtos.RelationMembersListsDtos;
 using Shoppinglist_back.Dtos.ShoppingListDtos;
 using Shoppinglist_back.Models;
+using System.Runtime.Serialization.Formatters;
 
 namespace Shoppinglist_back.Services;
 
@@ -17,19 +18,35 @@ public class ShoppingListService
         _mapper = mapper;
         _context = context;
     }
-    public async Task<ShoppingList> Create(CreateShoppingListDto listDto)
+    public async Task<ReadShoppingListDto> Create(CreateShoppingListDto listDto, string creatorId)
     {
+        var user = _context.Users.FirstOrDefault(u => u.Id == creatorId);
+        if (user == null) throw new NullReferenceException("Não foi possível encontrar o usuário para criar essa lista");
+
         var newList = _mapper.Map<ShoppingList>(listDto);
+        
         _context.ShoppingList.Add(newList);
         await _context.SaveChangesAsync();
-        return newList;
+        var readList = await GetOne(newList.Id);
+        return readList;
     }
 
     public async Task<ReadShoppingListDto> GetOne(int id)
     {
         var shoppingList = await _context.ShoppingList.Include(sl => sl.RelationMembersLists)
                                   .FirstOrDefaultAsync(sl => sl.Id == id);
+        if (shoppingList == null) throw new NullReferenceException("não foi possível encontrar essa lista");
+
+
+        var membersList = new List<ReadRelationMembersListsThroughListDto>();
+        foreach (var member in shoppingList.RelationMembersLists)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == member.UserId);
+            member.User.Name = user?.Name;
+            membersList.Add(_mapper.Map<ReadRelationMembersListsThroughListDto>(member));
+        }
         var completeInfo = _mapper.Map<ReadShoppingListDto>(shoppingList);
+        completeInfo.Members = membersList;
         return completeInfo;
     }
 
@@ -42,10 +59,11 @@ public class ShoppingListService
         {
             Id = sl.Id,
             Title = sl.Title,
-            ReadRelationMLDtos = sl.RelationMembersLists
+            Members = sl.RelationMembersLists
                 .Select(rml => new ReadRelationMembersListsThroughListDto
                 {
                     UserId = rml.UserId,
+                    Name = rml.User.Name,
                     IsAdmin = rml.IsAdmin
                 })
                 .ToList()

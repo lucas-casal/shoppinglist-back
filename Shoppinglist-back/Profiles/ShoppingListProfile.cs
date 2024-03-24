@@ -9,7 +9,7 @@ public class ShoppingListProfile : Profile
     public ShoppingListProfile()
     {
         CreateMap<CreateShoppingListDto, ShoppingList>();
-        CreateMap<ShoppingList, ReadShoppingListDto>().ForMember(dto => dto.ReadRelationMLDtos, opt => opt.MapFrom(shoppingList => shoppingList.RelationMembersLists));
+        CreateMap<ShoppingList, ReadShoppingListDto>().ForMember(dest => dest.Members, opt => opt.MapFrom(src => src.RelationMembersLists));
         CreateMap<ReadShoppingListDto, ShoppingList>();
     }
 }
