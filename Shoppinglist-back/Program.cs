@@ -16,9 +16,6 @@ var connectionString = builder.Configuration.GetConnectionString("Shoppinglister
 builder.Services.AddDbContext<ShoppinglisterContext>(opts => 
     opts.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-builder.Services.AddDbContext<ShoppinglisterContext>(opts => 
-    opts.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-
 builder.Services.AddIdentity<User, IdentityRole>(opts =>
 {
     opts.User.RequireUniqueEmail = true;
@@ -32,6 +29,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<RelationMembersListsService>();
+builder.Services.AddScoped<RelationProductsListsService>();
 builder.Services.AddScoped<ShoppingListService>();
 builder.Services.AddScoped<RelatedUsersService>();
 builder.Services.AddScoped<RelatedUsersRequestService>();

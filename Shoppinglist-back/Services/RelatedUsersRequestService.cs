@@ -37,7 +37,7 @@ public class RelatedUsersRequestService
         var RURequest = new RelatedUsersRequest
         {
             UserAId = dto.UserAId,
-            UserBId = dto.UserBId,
+            UserBId = dto.UserBId
         };
 
         if (request is null)

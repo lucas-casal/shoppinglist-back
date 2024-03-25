@@ -12,8 +12,8 @@ using Shoppinglist_back.Data;
 namespace Shoppinglist_back.Migrations
 {
     [DbContext(typeof(ShoppinglisterContext))]
-    [Migration("20240318232852_fixRelat")]
-    partial class fixRelat
+    [Migration("20240324170021_base do banco")]
+    partial class basedobanco
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -148,21 +148,18 @@ namespace Shoppinglist_back.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<int>("ListId")
+                    b.Property<int>("ShoppingListId")
                         .HasColumnType("int");
 
                     b.Property<bool?>("Approved")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<bool>("Invited")
                         .HasColumnType("tinyint(1)");
 
-                    b.HasKey("UserId", "ListId");
+                    b.HasKey("UserId", "ShoppingListId");
 
-                    b.HasIndex("ListId");
+                    b.HasIndex("ShoppingListId");
 
                     b.ToTable("JoinListRequest");
                 });
@@ -193,11 +190,9 @@ namespace Shoppinglist_back.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("NicknameA")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("NicknameB")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.HasKey("UserAId", "UserBId");
@@ -218,9 +213,6 @@ namespace Shoppinglist_back.Migrations
                     b.Property<bool?>("Approved")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.HasKey("UserAId", "UserBId");
 
                     b.HasIndex("UserBId");
@@ -236,9 +228,6 @@ namespace Shoppinglist_back.Migrations
                     b.Property<int>("ShoppingListId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("tinyint(1)");
 
@@ -251,7 +240,7 @@ namespace Shoppinglist_back.Migrations
 
             modelBuilder.Entity("Shoppinglist_back.Models.RelationProductsLists", b =>
                 {
-                    b.Property<int>("ListId")
+                    b.Property<int>("ShoppingListId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
@@ -261,16 +250,13 @@ namespace Shoppinglist_back.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<int>("QuantityBought")
                         .HasColumnType("int");
 
                     b.Property<int>("QuantityWanted")
                         .HasColumnType("int");
 
-                    b.HasKey("ListId", "ProductId");
+                    b.HasKey("ShoppingListId", "ProductId");
 
                     b.HasIndex("ProductId");
 
@@ -355,7 +341,7 @@ namespace Shoppinglist_back.Migrations
                 {
                     b.HasOne("Shoppinglist_back.Models.ShoppingList", "ShoppingList")
                         .WithMany("JoinListRequests")
-                        .HasForeignKey("ListId")
+                        .HasForeignKey("ShoppingListId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -429,15 +415,15 @@ namespace Shoppinglist_back.Migrations
 
             modelBuilder.Entity("Shoppinglist_back.Models.RelationProductsLists", b =>
                 {
-                    b.HasOne("Shoppinglist_back.Models.ShoppingList", "ShoppingList")
-                        .WithMany("RelationProductsLists")
-                        .HasForeignKey("ListId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Shoppinglist_back.Models.Product", "Product")
                         .WithMany("RelationProductsLists")
                         .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shoppinglist_back.Models.ShoppingList", "ShoppingList")
+                        .WithMany("RelationProductsLists")
+                        .HasForeignKey("ShoppingListId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

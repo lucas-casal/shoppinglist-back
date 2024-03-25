@@ -75,7 +75,7 @@ public class ShoppinglisterContext : IdentityDbContext<User>
 
         //Relationating Users and JoinRequests
         modelBuilder.Entity<JoinListRequest>()
-        .HasKey(jlr => new { jlr.UserId, jlr.ListId });
+        .HasKey(jlr => new { jlr.UserId, jlr.ShoppingListId });
 
         modelBuilder.Entity<JoinListRequest>()
             .HasOne(jlr => jlr.User)
@@ -85,17 +85,17 @@ public class ShoppinglisterContext : IdentityDbContext<User>
         modelBuilder.Entity<JoinListRequest>()
             .HasOne(jlr => jlr.ShoppingList)
             .WithMany(u => u.JoinListRequests)
-            .HasForeignKey(jlr => jlr.ListId);
+            .HasForeignKey(jlr => jlr.ShoppingListId);
         // END
 
         //Relationating Users and JoinRequests
         modelBuilder.Entity<RelationProductsLists>()
-        .HasKey(rpl => new { rpl.ListId, rpl.ProductId });
+        .HasKey(rpl => new { rpl.ShoppingListId, rpl.ProductId });
 
         modelBuilder.Entity<RelationProductsLists>()
             .HasOne(rpl => rpl.ShoppingList)
             .WithMany(sl => sl.RelationProductsLists)
-            .HasForeignKey(rpl => rpl.ListId);
+            .HasForeignKey(rpl => rpl.ShoppingListId);
 
         modelBuilder.Entity<RelationProductsLists>()
             .HasOne(rpl => rpl.Product)

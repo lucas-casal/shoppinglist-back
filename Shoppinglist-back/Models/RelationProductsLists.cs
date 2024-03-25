@@ -11,8 +11,8 @@ public class RelationProductsLists
     [ForeignKey("ProductId")]
     public virtual Product Product { get; set; }
     [Required]
-    public int ListId { get; set; }
-    [ForeignKey("ListId")]
+    public int ShoppingListId { get; set; }
+    [ForeignKey("ShoppingListId")]
     public virtual ShoppingList ShoppingList { get; set; }
     public string Description { get; set; }
     [Required]

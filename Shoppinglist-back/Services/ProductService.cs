@@ -20,7 +20,7 @@ public class ProductService
     public async Task<ReadProductAloneDto> Create(CreateProductDto dto)
     {
         dto.Name = dto.Name.TrimStart().TrimEnd();
-        var product = await _context.Product.FirstOrDefaultAsync(p => p.Name.ToUpper() == dto.Name.ToUpper());
+        var product = await _context.Product.FirstOrDefaultAsync(p => p.Name.Normalize() == dto.Name.Normalize());
 
         if (product is not null) throw new InvalidOperationException("Esse produto já existe!");
 
@@ -41,9 +41,9 @@ public class ProductService
 
     public async Task<IEnumerable<ReadProductAloneDto>> GetAll(GetAllProductDto dto)
     {
-        dto.ProductName = dto.ProductName is not null ? dto.ProductName.TrimStart().TrimEnd() : "";
+        dto.ProductName = dto.ProductName is not null ? dto.ProductName.Trim() : "";
         var products = await _context.Product.Select(p => new ReadProductAloneDto { Id = p.Id, Name = p.Name })
-                                              .Where(p => p.Name.ToUpper().StartsWith(dto.ProductName.ToUpper()))
+                                              .Where(p => p.Name.Normalize().StartsWith(dto.ProductName.Normalize()))
                                               .OrderBy(p => p.Name)
                                               .Skip(dto.Skip)
                                               .Take(dto.Limit)
@@ -54,8 +54,8 @@ public class ProductService
 
     public async Task<ReadProductAloneDto> UpdateOne(int productId, UpdateProductDto dto)
     {
-        dto.Name = dto.Name.TrimStart().TrimEnd();
-        var homonymous = await _context.Product.FirstOrDefaultAsync(p => p.Name.ToUpper() == dto.Name.ToUpper());
+        dto.Name = dto.Name.Trim();
+        var homonymous = await _context.Product.FirstOrDefaultAsync(p => p.Name.Normalize() == dto.Name.Normalize());
 
         if (homonymous is not null) throw new InvalidOperationException($"Esse produto já existe com id={homonymous.Id}!");
 

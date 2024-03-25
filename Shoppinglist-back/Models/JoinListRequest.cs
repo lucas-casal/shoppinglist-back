@@ -10,8 +10,8 @@ public class JoinListRequest
     [ForeignKey("UserId")]
     public virtual User User { get; set; }
     [Required]
-    public int ListId { get; set; }
-    [ForeignKey("ListId")]
+    public int ShoppingListId { get; set; }
+    [ForeignKey("ShoppingListId")]
     public virtual ShoppingList ShoppingList { get; set; }
     [Required]
     public bool Invited { get; set; }

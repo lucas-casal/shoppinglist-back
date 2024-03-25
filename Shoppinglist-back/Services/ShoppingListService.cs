@@ -82,7 +82,7 @@ public class ShoppingListService
             throw new ArgumentException("Shopping list not found.");
         }
 
-        _context.ShoppingList.Remove(shoppingList); // Não é necessário anexar porque a entidade já está sendo rastreada
+        _context.ShoppingList.Remove(shoppingList);
         await _context.SaveChangesAsync();
     }
 

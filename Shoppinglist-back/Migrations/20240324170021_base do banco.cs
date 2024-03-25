@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Shoppinglist_back.Migrations
 {
     /// <inheritdoc />
-    public partial class relationsStablishedInUserCont : Migration
+    public partial class basedobanco : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -197,8 +197,7 @@ namespace Shoppinglist_back.Migrations
                 columns: table => new
                 {
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    ListId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    ShoppingListId = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     QuantityWanted = table.Column<int>(type: "int", nullable: false),
@@ -206,7 +205,7 @@ namespace Shoppinglist_back.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RelationProductsLists", x => new { x.ListId, x.ProductId });
+                    table.PrimaryKey("PK_RelationProductsLists", x => new { x.ShoppingListId, x.ProductId });
                     table.ForeignKey(
                         name: "FK_RelationProductsLists_Product_ProductId",
                         column: x => x.ProductId,
@@ -214,8 +213,8 @@ namespace Shoppinglist_back.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RelationProductsLists_ShoppingList_ListId",
-                        column: x => x.ListId,
+                        name: "FK_RelationProductsLists_ShoppingList_ShoppingListId",
+                        column: x => x.ShoppingListId,
                         principalTable: "ShoppingList",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -228,17 +227,16 @@ namespace Shoppinglist_back.Migrations
                 {
                     UserId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ListId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    ShoppingListId = table.Column<int>(type: "int", nullable: false),
                     Invited = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Approved = table.Column<bool>(type: "tinyint(1)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_JoinListRequest", x => new { x.UserId, x.ListId });
+                    table.PrimaryKey("PK_JoinListRequest", x => new { x.UserId, x.ShoppingListId });
                     table.ForeignKey(
-                        name: "FK_JoinListRequest_ShoppingList_ListId",
-                        column: x => x.ListId,
+                        name: "FK_JoinListRequest_ShoppingList_ShoppingListId",
+                        column: x => x.ShoppingListId,
                         principalTable: "ShoppingList",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -259,10 +257,9 @@ namespace Shoppinglist_back.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UserBId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    NicknameA = table.Column<string>(type: "longtext", nullable: false)
+                    NicknameA = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    NicknameB = table.Column<string>(type: "longtext", nullable: false)
+                    NicknameB = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -291,7 +288,6 @@ namespace Shoppinglist_back.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UserBId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Id = table.Column<int>(type: "int", nullable: false),
                     Approved = table.Column<bool>(type: "tinyint(1)", nullable: true)
                 },
                 constraints: table =>
@@ -319,7 +315,6 @@ namespace Shoppinglist_back.Migrations
                     UserId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ShoppingListId = table.Column<int>(type: "int", nullable: false),
-                    Id = table.Column<int>(type: "int", nullable: false),
                     IsAdmin = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
@@ -341,9 +336,9 @@ namespace Shoppinglist_back.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_JoinListRequest_ListId",
+                name: "IX_JoinListRequest_ShoppingListId",
                 table: "JoinListRequest",
-                column: "ListId");
+                column: "ShoppingListId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RelatedUsers_UserBId",
