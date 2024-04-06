@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Shoppinglist_back.Data;
 using Shoppinglist_back.Dtos.UserDtos;
 using Shoppinglist_back.Models;
 
@@ -11,13 +12,15 @@ public class UserService
     private UserManager<User> _userManager;
     private SignInManager<User> _signInManager;
     private TokenService _tokenService;
+    private ShoppinglisterContext _context;
 
-    public UserService(IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, TokenService tokenService)
+    public UserService(IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, TokenService tokenService, ShoppinglisterContext context)
     {
         _mapper = mapper;
         _userManager = userManager;
         _signInManager = signInManager;
         _tokenService = tokenService;
+        _context = context;
     }
     public async Task SignUp(CreateUserDto userDto)
     {
@@ -37,6 +40,16 @@ public class UserService
         var user = _signInManager.UserManager.Users.FirstOrDefault(e => e.NormalizedUserName == userDto.UserName.ToUpper());
 
         var token = _tokenService.GenerateToken(user);
+
+        _context.UserTokens.Add(new IdentityUserToken<string>
+        {
+            LoginProvider = "none",
+            UserId = user.Id,
+            Name = "access_token",
+            Value = token
+        });
+
+        _context.SaveChanges();
 
         return token;
     }

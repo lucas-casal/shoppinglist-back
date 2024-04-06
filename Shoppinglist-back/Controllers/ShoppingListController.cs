@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shoppinglist_back.Dtos.ShoppingListDtos;
 using Shoppinglist_back.Services;
 using System.Text.Json;
@@ -20,10 +21,11 @@ public class ShoppingListController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateShoppinglist([FromBody] CreateShoppingListDto listDto, [FromHeader(Name = "UserId")] string creatorId)
+    [Authorize(Policy = "HasToken")]
+    public async Task<IActionResult> CreateShoppinglist([FromHeader(Name = "Authorization")] string token, [FromBody] CreateShoppingListDto listDto)
     {
         
-        var shoppingList = await _shoppingListService.Create(listDto, creatorId);
+        var shoppingList = await _shoppingListService.Create(token, listDto);
 
         await _relationMembersListsService.CreateMany(listDto.Members, shoppingList.Id);
         var options = new JsonSerializerOptions
@@ -67,20 +69,22 @@ public class ShoppingListController : ControllerBase
     }
 
     [HttpDelete("{listId}")]
-    public async Task<IActionResult> DeleteOne(int listId)
+    [Authorize(Policy = "HasToken")]
+    public async Task<IActionResult> DeleteOne([FromHeader(Name="Authorization")] string token, int listId)
     {
 
-        await _shoppingListService.DeleteOne(listId);
+        await _shoppingListService.DeleteOne(token, listId);
 
         return NoContent();
 
     }
 
     [HttpPut("{listId}")]
-    public async Task<IActionResult> UpdateTitle(int listId, [FromBody] UpdateShoppingListDto newShoppingList)
+    [Authorize(Policy = "HasToken")]
+    public async Task<IActionResult> UpdateTitle([FromHeader(Name = "Authorization")] string token, int listId, [FromBody] UpdateShoppingListDto newShoppingList)
     {
 
-        var updatedShoppingList = await _shoppingListService.UpdateTitle(listId, newShoppingList);
+        var updatedShoppingList = await _shoppingListService.UpdateTitle(token, listId, newShoppingList);
 
         return Ok(updatedShoppingList);
 

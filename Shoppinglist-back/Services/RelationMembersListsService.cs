@@ -19,9 +19,14 @@ public class RelationMembersListsService
         _context = context;
     }
 
-    public async Task<ReadRelationMembersListsCompleteDto> Create(string userId, CreateRelationMembersListsDto dto)
+    public async Task<ReadRelationMembersListsCompleteDto> Create(string token, CreateRelationMembersListsDto dto)
     {
-        var admin = await _context.RelationMembersLists.FirstOrDefaultAsync(rml => rml.UserId == userId);
+        var noBearer = token.Split(" ")[1];
+        var session = await _context.UserTokens.FirstOrDefaultAsync(t => t.Value == noBearer);
+        if (session == null) throw new UnauthorizedAccessException("Token inválido!!!");
+
+        var adminId = session.UserId;
+        var admin = await _context.RelationMembersLists.FirstOrDefaultAsync(rml => rml.UserId == adminId);
 
         if (admin is null || admin?.IsAdmin is false) throw new UnauthorizedAccessException("O usuário que requisitou isso, não é um administrador dessa lista!");
 
@@ -92,9 +97,14 @@ public class RelationMembersListsService
         return relations;
     }
 
-    public async Task<ReadRelationMembersListsDto> UpdateRole(string userId, UpdateRelationMembersListsDto dto)
+    public async Task<ReadRelationMembersListsDto> UpdateRole(string token, UpdateRelationMembersListsDto dto)
     {
-        var admin = await _context.RelationMembersLists.FirstOrDefaultAsync(rml => rml.UserId == userId);
+        var noBearer = token.Split(" ")[1];
+        var session = await _context.UserTokens.FirstOrDefaultAsync(t => t.Value == noBearer);
+        if (session == null) throw new UnauthorizedAccessException("Token inválido!!!");
+
+        var adminId = session.UserId;
+        var admin = await _context.RelationMembersLists.FirstOrDefaultAsync(rml => rml.UserId == adminId);
 
         if (admin is null || admin?.IsAdmin is false) throw new UnauthorizedAccessException("O usuário que requisitou isso, não é um administrador dessa lista!");
 
@@ -116,9 +126,14 @@ public class RelationMembersListsService
         return readRelation;
     }
 
-    public async Task DeleteOne(string userId, DeleteRelationMembersListsDto dto)
+    public async Task DeleteOne(string token, DeleteRelationMembersListsDto dto)
     {
-        var admin = await _context.RelationMembersLists.FirstOrDefaultAsync(rml => rml.UserId == userId);
+        var noBearer = token.Split(" ")[1];
+        var session = await _context.UserTokens.FirstOrDefaultAsync(t => t.Value == noBearer);
+        if (session == null) throw new UnauthorizedAccessException("Token inválido!!!");
+
+        var adminId = session.UserId;
+        var admin = await _context.RelationMembersLists.FirstOrDefaultAsync(rml => rml.UserId == adminId);
 
         if (admin is null || admin?.IsAdmin is false) throw new UnauthorizedAccessException("O usuário que requisitou isso, não é um administrador dessa lista!");
 

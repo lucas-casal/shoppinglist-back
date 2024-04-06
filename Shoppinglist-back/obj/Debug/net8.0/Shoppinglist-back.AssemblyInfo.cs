@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Shoppinglist-back")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+acf132791e1418224fed10ef07666d16a4c00401")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b4c7ec2360dcdfd3daf66f5a59cbd6a904b686d8")]
 [assembly: System.Reflection.AssemblyProductAttribute("Shoppinglist-back")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Shoppinglist-back")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

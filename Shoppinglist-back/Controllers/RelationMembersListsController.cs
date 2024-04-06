@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shoppinglist_back.Dtos.RelationMembersListsDtos;
 using Shoppinglist_back.Services;
 
@@ -6,6 +7,7 @@ namespace Shoppinglist_back.Controllers;
 
 [Controller]
 [Route("[Controller]")]
+[Authorize(Policy = "HasToken")]
 public class RelationMembersListsController : ControllerBase
 {
     private RelationMembersListsService _relationMembersListsServer;
@@ -16,9 +18,9 @@ public class RelationMembersListsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateRelationMembersListsDto dto, [FromHeader(Name = "userId")] string userId)
+    public async Task<IActionResult> Create([FromHeader(Name = "Authorization")] string token, [FromBody] CreateRelationMembersListsDto dto)
     {
-        var relation = await _relationMembersListsServer.Create(userId, dto);
+        var relation = await _relationMembersListsServer.Create(token, dto);
         return CreatedAtAction(nameof(GetOne), new { userId = relation.UserId, shoppingListId = relation.ShoppingListId }, relation);
     }
 
@@ -37,16 +39,16 @@ public class RelationMembersListsController : ControllerBase
     }
 
     [HttpPut("{memberId}/{shoppingListId}")]
-    public async Task<IActionResult> UpdateRole(string memberId, int shoppingListId, [FromBody] UpdateRelationMembersListsDto dto, [FromHeader(Name = "userId")] string userId)
+    public async Task<IActionResult> UpdateRole([FromHeader(Name = "Authorization")] string token, string memberId, int shoppingListId, [FromBody] UpdateRelationMembersListsDto dto)
     {
-        var relation = await _relationMembersListsServer.UpdateRole(userId, new UpdateRelationMembersListsDto { UserId = memberId, ShoppingListId = shoppingListId, IsAdmin = dto.IsAdmin });
+        var relation = await _relationMembersListsServer.UpdateRole(token, new UpdateRelationMembersListsDto { UserId = memberId, ShoppingListId = shoppingListId, IsAdmin = dto.IsAdmin });
         return Ok(relation);
     }
 
     [HttpDelete("{memberId}/{shoppingListId}")]
-    public async Task<IActionResult> DeleteOne(string memberId, int shoppingListId, [FromHeader(Name = "userId")] string userId)
+    public async Task<IActionResult> DeleteOne([FromHeader(Name = "Authorization")] string token, string memberId, int shoppingListId)
     {
-        await _relationMembersListsServer.DeleteOne(userId, new DeleteRelationMembersListsDto { ShoppingListId = shoppingListId, UserId = memberId });
+        await _relationMembersListsServer.DeleteOne(token, new DeleteRelationMembersListsDto { ShoppingListId = shoppingListId, UserId = memberId });
         return NoContent();
     }
 

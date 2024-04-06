@@ -18,15 +18,25 @@ public class RelatedUsersRequestService
         _context = userContext;
     }
 
-    public async Task<RelatedUsersRequest> Create(CreateRelatedUsersRequestDto dto)
+    public async Task<RelatedUsersRequest> Create(string token, CreateRelatedUsersRequestDto dto)
     {
+        var noBearer = token.Split(" ")[1];
+        var session = await _context.UserTokens.FirstOrDefaultAsync(t => t.Value == noBearer);
+        if (session == null) throw new UnauthorizedAccessException("Token inválido!!!");
+
+        var authorId = session.UserId;
+        var author = await _context.Users.FirstOrDefaultAsync(u => u.Id == authorId);
+        if (author is null) throw new NullReferenceException("Esse usuário não existe!");
+
+        if (authorId != dto.UserAId && authorId != dto.UserBId) throw new Exception("Você não pode criar uma relação para terceiros!");
+
         var relation = await _context.RelatedUsers.FirstOrDefaultAsync(rur =>
                                                 (dto.UserAId == rur.UserAId || dto.UserAId == rur.UserBId)
                                                 &&
                                                 (dto.UserBId == rur.UserAId || dto.UserBId == rur.UserBId)
                                                );
 
-        if (relation != null) throw new InvalidOperationException("Esses usuários já estão relacionados");
+        if (relation is not null) throw new InvalidOperationException("Esses usuários já estão relacionados");
 
         var request = await _context.RelatedUsersRequest.FirstOrDefaultAsync(rur =>
                                                 (dto.UserAId == rur.UserAId || dto.UserAId == rur.UserBId)
@@ -93,8 +103,17 @@ public class RelatedUsersRequestService
         return relations;
     }
 
-    public async Task Answer(RelatedUsersRequest dto)
+    public async Task Answer(string token, RelatedUsersRequest dto)
     {
+        var noBearer = token.Split(" ")[1];
+        var session = await _context.UserTokens.FirstOrDefaultAsync(t => t.Value == noBearer);
+        if (session == null) throw new UnauthorizedAccessException("Token inválido!!!");
+
+        var authorId = session.UserId;
+        var author = await _context.Users.FirstOrDefaultAsync(u => u.Id == authorId);
+        if (author is null) throw new NullReferenceException("Esse usuário não existe!");
+        if (authorId != dto.UserBId) throw new UnauthorizedAccessException("Esse usuário não pode responder a essa solicitação!");
+
         var request = await _context.RelatedUsersRequest.FirstOrDefaultAsync(rur => (rur.UserAId == dto.UserAId) && (rur.UserBId == dto.UserBId));
         if (request is null) throw new NullReferenceException("não foi encontrada nenhuma requisição entre esses usuários");
         

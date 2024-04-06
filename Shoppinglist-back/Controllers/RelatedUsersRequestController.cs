@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Shoppinglist_back.Dtos.RelatedUsersRequestDtos;
 using Shoppinglist_back.Models;
@@ -19,9 +20,10 @@ public class RelatedUsersRequestController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateRelatedUsersRequestDto dto)
+    [Authorize(Policy = "HasToken")]
+    public async Task<IActionResult> Create([FromHeader(Name = "Authorization")] string token, [FromBody] CreateRelatedUsersRequestDto dto)
     {
-        var request = await _relatedUsersRequestService.Create(dto);
+        var request = await _relatedUsersRequestService.Create(token, dto);
         return CreatedAtAction(nameof(GetOne), new {IdA = dto.UserAId, IdB = dto.UserBId}, request);
     }
 
@@ -42,7 +44,8 @@ public class RelatedUsersRequestController : ControllerBase
     }
 
     [HttpPut("{IdA}")]
-    public async Task<IActionResult> Answer(string IdA, [FromBody] AnswerRelatedUsersRequestDto dto, [FromHeader(Name = "UserId")] string UserId)
+    [Authorize(Policy = "HasToken")]
+    public async Task<IActionResult> Answer([FromHeader(Name ="Authorization")] string token, string IdA, [FromBody] AnswerRelatedUsersRequestDto dto, [FromHeader(Name = "UserId")] string UserId)
     {
         var response = new RelatedUsersRequest
         {
@@ -50,15 +53,10 @@ public class RelatedUsersRequestController : ControllerBase
             UserBId = UserId,
             Approved = dto.Approved
         };
-        try
-        {
-            await _relatedUsersRequestService.Answer(response);
+
+            await _relatedUsersRequestService.Answer(token, response);
             return Ok(response);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
+
     }
 
     [HttpDelete("{UserAId}/{UserBId}")]

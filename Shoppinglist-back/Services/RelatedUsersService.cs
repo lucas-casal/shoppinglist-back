@@ -62,8 +62,17 @@ public class RelatedUsersService
         return relations;
     }
 
-    public async Task<ReadRelatedUsersByUserIdDto> ChangeNickname(UpdateNicknameRelatedUsersDto dto)
+    public async Task<ReadRelatedUsersByUserIdDto> ChangeNickname(string token, UpdateNicknameRelatedUsersDto dto)
     {
+        var noBearer = token.Split(" ")[1];
+        var session = await _context.UserTokens.FirstOrDefaultAsync(t => t.Value == noBearer);
+        if (session == null) throw new UnauthorizedAccessException("Token inválido!!!");
+
+        var userId = session.UserId;
+        var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+
+        dto.UserId = userId;
+
         var relation = await _context.RelatedUsers
                                 .Include(ru => ru.UserA)
                                 .Include(ru => ru.UserB)
@@ -89,8 +98,15 @@ public class RelatedUsersService
         return readRelation;
     }
 
-    public async Task DeleteOne(DeleteRelatedUsersDto ids)
+    public async Task DeleteOne(string token, DeleteRelatedUsersDto ids)
     {
+        var noBearer = token.Split(" ")[1];
+        var session = await _context.UserTokens.FirstOrDefaultAsync(t => t.Value == noBearer);
+        if (session == null) throw new UnauthorizedAccessException("Token inválido!!!");
+
+        var userId = session.UserId;
+        if (userId != ids.UserAId && userId != ids.UserBId) throw new UnauthorizedAccessException("Você não pode remover essa relação!");
+
         var relation = await _context.RelatedUsers.FirstOrDefaultAsync(ru =>
                                (ru.UserAId == ids.UserAId || ru.UserAId == ids.UserBId)
                                &&

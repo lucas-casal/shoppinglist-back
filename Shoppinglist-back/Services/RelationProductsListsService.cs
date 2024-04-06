@@ -18,8 +18,13 @@ public class RelationProductsListsService
         _context = context;
     }
 
-    public async Task<ReadRelationProductsListsDto> Create(string userId, CreateRelationProductsListsDto dto)
+    public async Task<ReadRelationProductsListsDto> Create(string token, CreateRelationProductsListsDto dto)
     {
+        var noBearer = token.Split(" ")[1];
+        var session = await _context.UserTokens.FirstOrDefaultAsync(t => t.Value == noBearer);
+        if (session == null) throw new UnauthorizedAccessException("Token inválido!!!");
+
+        var adminId = session.UserId;
         var user = await _context.Users.Include(u => u.RelationMembersLists)
                                         .Select(u => new
                                         {
@@ -32,7 +37,7 @@ public class RelationProductsListsService
                                                 IsAdmin = rml.IsAdmin
                                             }).Where(rml => rml.ShoppingListId == dto.ShoppingListId).ToList()
                                         })
-                                        .FirstOrDefaultAsync(u => u.Id ==  userId);
+                                        .FirstOrDefaultAsync(u => u.Id ==  adminId);
         if (user is null || user.Role.Count == 0 || user.Role[0].IsAdmin is not true) throw new UnauthorizedAccessException("Esse usuário não é administrador dessa lista!");
 
         var product = await _context.Product.FirstOrDefaultAsync(p => p.Id == dto.ProductId);
@@ -60,9 +65,14 @@ public class RelationProductsListsService
         return _mapper.Map<ReadRelationProductsListsDto>(relation);
     }
 
-    public async Task<ReadRelationProductsListsDto> UpdateDescription(string userId, UpdateDescriptionRelationProductsListsDto dto)
+    public async Task<ReadRelationProductsListsDto> UpdateDescription(string token, UpdateDescriptionRelationProductsListsDto dto)
     {
-        var user = await _context.RelationMembersLists.FirstOrDefaultAsync(rml => rml.UserId == userId && rml.ShoppingListId == dto.ShoppingListId);
+        var noBearer = token.Split(" ")[1];
+        var session = await _context.UserTokens.FirstOrDefaultAsync(t => t.Value == noBearer);
+        if (session == null) throw new UnauthorizedAccessException("Token inválido!!!");
+
+        var adminId = session.UserId;
+        var user = await _context.RelationMembersLists.FirstOrDefaultAsync(rml => rml.UserId == adminId && rml.ShoppingListId == dto.ShoppingListId);
 
         if (user is null || user.IsAdmin is false) throw new InvalidOperationException("O usuário não está autorizado a realizar essa alteração!");
 
@@ -78,9 +88,14 @@ public class RelationProductsListsService
         return _mapper.Map<ReadRelationProductsListsDto>(relation);
     }
 
-    public async Task<ReadRelationProductsListsDto> UpdateQuantityWanted(string userId, UpdateWantedRelationProductsListsDto dto)
+    public async Task<ReadRelationProductsListsDto> UpdateQuantityWanted(string token, UpdateWantedRelationProductsListsDto dto)
     {
-        var user = await _context.RelationMembersLists.FirstOrDefaultAsync(rml => rml.UserId == userId && rml.ShoppingListId == dto.ShoppingListId);
+        var noBearer = token.Split(" ")[1];
+        var session = await _context.UserTokens.FirstOrDefaultAsync(t => t.Value == noBearer);
+        if (session == null) throw new UnauthorizedAccessException("Token inválido!!!");
+
+        var adminId = session.UserId;
+        var user = await _context.RelationMembersLists.FirstOrDefaultAsync(rml => rml.UserId == adminId && rml.ShoppingListId == dto.ShoppingListId);
 
         if (user is null || user.IsAdmin is false) throw new InvalidOperationException("O usuário não está autorizado a realizar essa alteração!");
 
@@ -96,8 +111,13 @@ public class RelationProductsListsService
         return _mapper.Map<ReadRelationProductsListsDto>(relation);
     }
 
-    public async Task<ReadRelationProductsListsDto> UpdateQuantityBought(string userId, UpdateBoughtRelationProductsListsDto dto)
+    public async Task<ReadRelationProductsListsDto> UpdateQuantityBought(string token, UpdateBoughtRelationProductsListsDto dto)
     {
+        var noBearer = token.Split(" ")[1];
+        var session = await _context.UserTokens.FirstOrDefaultAsync(t => t.Value == noBearer);
+        if (session == null) throw new UnauthorizedAccessException("Token inválido!!!");
+
+        var userId = session.UserId;
         var user = await _context.RelationMembersLists.FirstOrDefaultAsync(rml => rml.UserId == userId && rml.ShoppingListId == dto.ShoppingListId);
 
         if (user is null) throw new InvalidOperationException("O usuário não está autorizado a realizar essa alteração!");
@@ -114,9 +134,14 @@ public class RelationProductsListsService
         return _mapper.Map<ReadRelationProductsListsDto>(relation);
     }
 
-    public async Task Delete(string userId, DeleteRelationProductsListsDto dto)
+    public async Task Delete(string token, DeleteRelationProductsListsDto dto)
     {
-        var user = await _context.RelationMembersLists.FirstOrDefaultAsync(rml => rml.UserId == userId && rml.ShoppingListId == dto.ShoppingListId);
+        var noBearer = token.Split(" ")[1];
+        var session = await _context.UserTokens.FirstOrDefaultAsync(t => t.Value == noBearer);
+        if (session == null) throw new UnauthorizedAccessException("Token inválido!!!");
+
+        var adminId = session.UserId;
+        var user = await _context.RelationMembersLists.FirstOrDefaultAsync(rml => rml.UserId == adminId && rml.ShoppingListId == dto.ShoppingListId);
 
         if (user is null || user.IsAdmin is false) throw new InvalidOperationException("O usuário não está autorizado a realizar essa alteração!");
 

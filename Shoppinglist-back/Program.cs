@@ -27,12 +27,13 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Add services to the container.
 
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<RelatedUsersService>();
+builder.Services.AddScoped<RelatedUsersRequestService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<RelationMembersListsService>();
 builder.Services.AddScoped<RelationProductsListsService>();
+builder.Services.AddScoped<JoinListRequestService>();
 builder.Services.AddScoped<ShoppingListService>();
-builder.Services.AddScoped<RelatedUsersService>();
-builder.Services.AddScoped<RelatedUsersRequestService>();
 builder.Services.AddScoped<ProductService>();
 
 builder.Services.AddControllers();

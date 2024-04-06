@@ -14,6 +14,6 @@ public class JoinListRequest
     [ForeignKey("ShoppingListId")]
     public virtual ShoppingList ShoppingList { get; set; }
     [Required]
-    public bool Invited { get; set; }
-    public bool? Approved {  get; set; }
+    public bool Invited { get; set; } //indica se o usuário foi convidado (true) ou se está pedindo para entrar (false)
+    public bool? Approved {  get; set; } //indica se o convite foi aceito ou não
 }

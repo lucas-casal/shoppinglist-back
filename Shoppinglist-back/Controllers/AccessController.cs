@@ -10,8 +10,8 @@ public class AccessController : ControllerBase
 {
     [HttpGet]
     [Authorize(Policy = "HasToken")]
-    public IActionResult Get()
+    public IActionResult Get([FromHeader(Name = "Authorization")] string token)
     {
-        return Ok("Access granted!!");
+        return Ok(token);
     }
 }
